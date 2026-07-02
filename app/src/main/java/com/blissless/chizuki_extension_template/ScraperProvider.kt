@@ -1,4 +1,4 @@
-package com.blissless.tensei_extension_template
+package com.blissless.chizuki_extension_template
 
 import android.content.ContentProvider
 import android.content.ContentValues
