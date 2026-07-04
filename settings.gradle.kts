@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "tensei-extension-template"
+rootProject.name = "chizuki-extension-template"
 include(":app")

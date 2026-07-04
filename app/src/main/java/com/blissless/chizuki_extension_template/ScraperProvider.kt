@@ -15,12 +15,12 @@ import kotlin.collections.iterator
  *
  * Query URI:
  *   content://com.blissless.chizuki_extension_template.provider/scrape
- *     ?title=<name>[&season=N&episode=M]
+ *     ?title=<name>&tmdbId=<id>&mediaType=<movie|tv>[&season=N&episode=M]
  *
- * `season` and `episode` are sent for TV shows only; for movies only `title`
- * is sent. Returns a single-row MatrixCursor whose "data" column holds the
- * JSON string produced by [serializeResult]. See [TemplateScraper] for the
- * expected return shapes.
+ * `tmdbId` and `mediaType` are always sent. `season` and `episode` are sent
+ * for TV shows only. Returns a single-row MatrixCursor whose "data" column
+ * holds the JSON string produced by [serializeResult]. See [TemplateScraper]
+ * for the expected return shapes.
  */
 class ScraperProvider : ContentProvider() {
 
@@ -43,14 +43,16 @@ class ScraperProvider : ContentProvider() {
     ): Cursor? {
         when (uriMatcher.match(uri)) {
             CODE_SCRAPES -> {
-                val title    = uri.getQueryParameter("title")
-                val season   = uri.getQueryParameter("season")?.toIntOrNull()
-                val episode  = uri.getQueryParameter("episode")?.toIntOrNull()
+                val title     = uri.getQueryParameter("title")
+                val tmdbId    = uri.getQueryParameter("tmdbId")?.toIntOrNull()
+                val mediaType = uri.getQueryParameter("mediaType")
+                val season    = uri.getQueryParameter("season")?.toIntOrNull()
+                val episode   = uri.getQueryParameter("episode")?.toIntOrNull()
                 val cursor = MatrixCursor(arrayOf("data"))
 
                 try {
                     val result = TemplateScraper.scrape(
-                        context!!, title, season, episode
+                        context!!, title, tmdbId, mediaType, season, episode
                     )
                     val json = serializeResult(result)
                     cursor.addRow(arrayOf(json))
